@@ -17,16 +17,41 @@ app.use(express.static('public'));
 app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
-
-
+/*********************************************/
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
-
-
-
+/*********************************************/
+// New Date API endpoint
+app.get("/timestamp/api/:date", function (req, res) {
+  let timestamp = req.params.date;
+  if (timestamp.match(/\d{5,}/)) {
+    timestamp = +timestamp;
+  }
+  let inputDate = new Date(timestamp);
+  if (inputDate.toUTCString() == "Invalid Date") {
+    res.json({
+      error : "Invalid Date"
+      });
+  }
+  res.json({
+    unix: inputDate.valueOf(),
+    utc: inputDate.toUTCString()
+    });
+  });
+/*********************************************/
+// New Date API endpoint for empty values
+app.get("/timestamp/api/", function (req, res) {
+  let inputToDate = new Date();  
+  res.json({
+    unix: inputToDate.valueOf(),
+    utc: inputToDate.toUTCString()
+    });
+});
+/*********************************************/
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
+var listener = app.listen(3000 || process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
+/*********************************************/
